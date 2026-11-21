@@ -289,6 +289,26 @@ namespace AvsFactory {
 
 			}
 
+			// express flow: press a button for the visitor as soon as it is ready
+			public static expressClick(button: any, tries: number = 0) {
+
+				if (!(<any>Application).expressFlow || !button || !button.element) {
+					return;
+				}
+
+				if ((!button.states || button.states.enabled !== false) && button.element.is(':visible')) {
+					button.element.trigger('click');
+					return;
+				}
+
+				if (tries < 150) {
+					setTimeout(() => {
+						Method.expressClick(button, tries + 1);
+					}, 100);
+				}
+
+			}
+
 			public static goToSuccessStep() {
 				StartPage.Method.showPageStep(StartPage.Config.RESULT_PAGE_SUCCESS_LAYER);
 				ResultPageSuccess.init();

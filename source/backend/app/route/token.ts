@@ -102,6 +102,7 @@ export function load(app: Express.Application, storage: AvsStorageSession) {
 				ipCountry            : ipCountry,
 				deviceInfo           : userAgent,
 				countryAgeMajority   : config.countryAgeMajority,
+				expressFlow          : config.expressFlow,
 			},
 			debug: config.enableFrontEndDebug,
 		});

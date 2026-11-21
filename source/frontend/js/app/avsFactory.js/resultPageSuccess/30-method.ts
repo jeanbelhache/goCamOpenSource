@@ -46,6 +46,14 @@ namespace AvsFactory {
 						instance.entity.VerificationStepGlobal.isVerified     = true;
 						instance.entity.VerificationStepGlobal.successPayload = successData.successPayload;
 
+						// express flow: hand the result to the embedding page at once, no confirmation button
+						if ((<any>Application).expressFlow && StartPage.Config.VERIFICATION_VERSION == StartPage.Config.VERIFICATION_VERSION_IFRAME_V1) {
+							StartPage.instance.postMessage.emit(StartPage.Config.EVENT_ON_VERIFICATION_SUCCESS, {
+								status : true,
+								payload: successData.successPayload
+							});
+						}
+
 					},
 					(error: any) => {
 

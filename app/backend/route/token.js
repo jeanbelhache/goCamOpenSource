@@ -82,6 +82,7 @@ function load(app, storage) {
                 ipCountry: ipCountry,
                 deviceInfo: userAgent,
                 countryAgeMajority: config_1.config.countryAgeMajority,
+                expressFlow: config_1.config.expressFlow,
             },
             debug: config_1.config.enableFrontEndDebug,
         });

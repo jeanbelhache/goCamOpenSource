@@ -29,6 +29,10 @@ const configObject = {
     },
     cacheBuster: +new Date(),
     enableFrontEndDebug: process.env.ENABLE_FRONTEND_DEBUG || false,
+    // express flow: the embedding page has already presented the check, so the selfie starts
+    // without the start page (type choice, terms box, start button) and the result is sent
+    // to the embedding page without the confirmation button
+    expressFlow: process.env.EXPRESS_FLOW === 'true',
     countryAgeMajority: {
         "A1": 18,
         "A2": 18,

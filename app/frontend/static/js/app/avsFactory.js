@@ -275,6 +275,13 @@ var AvsFactory;
                 }).then(function (successData) {
                     ResultPageSuccess.instance.entity.VerificationStepGlobal.isVerified = true;
                     ResultPageSuccess.instance.entity.VerificationStepGlobal.successPayload = successData.successPayload;
+                    // express flow: hand the result to the embedding page at once, no confirmation button
+                    if (Application.expressFlow && AvsFactory.StartPage.Config.VERIFICATION_VERSION == AvsFactory.StartPage.Config.VERIFICATION_VERSION_IFRAME_V1) {
+                        AvsFactory.StartPage.instance.postMessage.emit(AvsFactory.StartPage.Config.EVENT_ON_VERIFICATION_SUCCESS, {
+                            status: true,
+                            payload: successData.successPayload
+                        });
+                    }
                 }, function (error) {
                     AvsFactory.StartPage.Method.showPageStep(AvsFactory.StartPage.Config.RESULT_PAGE_FAIL_LAYER);
                     AvsFactory.ResultPageFail.init();
@@ -1297,12 +1304,16 @@ var AvsFactory;
                             }
                             SelfieAgeDetectionIntro.instance.ui.SelfieAgeDetectionDeviceAccessArea.hide();
                             SelfieAgeDetectionIntro.instance.ui.SelfieAgeDetectionSubmitArea.show();
+                            // express flow: the camera starts without the intro's button
+                            AvsFactory.StartPage.Method.expressClick(SelfieAgeDetectionIntro.instance.ui.SelfieAgeDetectionStartButton);
                         });
                     }
                     else {
                         SelfieAgeDetectionIntro.instance.entity.SelfieAgeDetection.facingMode = SelfieAgeDetectionIntro.Config.FACING_MODE_REQUIRED;
                         SelfieAgeDetectionIntro.instance.ui.SelfieAgeDetectionDeviceAccessArea.hide();
                         SelfieAgeDetectionIntro.instance.ui.SelfieAgeDetectionSubmitArea.show();
+                        // express flow: the camera starts without the intro's button
+                        AvsFactory.StartPage.Method.expressClick(SelfieAgeDetectionIntro.instance.ui.SelfieAgeDetectionStartButton);
                     }
                 });
             };
@@ -2235,6 +2246,22 @@ var AvsFactory;
                 AvsFactory.ResultPageFail.init();
                 AvsFactory.ResultPageFail.Method.saveError(errorCode);
             };
+            // express flow: press a button for the visitor as soon as it is ready
+            Method.expressClick = function (button, tries) {
+                if (tries === void 0) { tries = 0; }
+                if (!Application.expressFlow || !button || !button.element) {
+                    return;
+                }
+                if ((!button.states || button.states.enabled !== false) && button.element.is(':visible')) {
+                    button.element.trigger('click');
+                    return;
+                }
+                if (tries < 150) {
+                    setTimeout(function () {
+                        Method.expressClick(button, tries + 1);
+                    }, 100);
+                }
+            };
             Method.goToSuccessStep = function () {
                 StartPage.Method.showPageStep(StartPage.Config.RESULT_PAGE_SUCCESS_LAYER);
                 AvsFactory.ResultPageSuccess.init();
@@ -2263,6 +2290,11 @@ var AvsFactory;
                         StartPage.instance.entity.SelfieAgeDetection.resourcesPreloaded = true;
                         StartPage.instance.ui.FaceApiPreloaderArea.fadeOut();
                         StartPage.instance.postMessage.emit(StartPage.Config.EVENT_ON_RESOURCES_LOADED);
+                        // express flow: no start page for the selfie, the embedding page stands for it
+                        if (Application.expressFlow && StartPage.instance.entity.VerificationStepGlobal.verificationType != Avs.Entity.VerificationStepGlobal.VERIFICATION_TYPE_SCAN_ID) {
+                            StartPage.instance.entity.VerificationStepGlobal.termsAndConditionAgreement = true;
+                            StartPage.Method.expressClick(StartPage.instance.ui.StartButton);
+                        }
                         return;
                     }
                     if (data.total.status === Avs.Helper.FilePreloader.FILE_STATUS_ERROR) {

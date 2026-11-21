@@ -37,6 +37,8 @@ namespace AvsFactory {
 
 							instance.ui.SelfieAgeDetectionDeviceAccessArea.hide();
 							instance.ui.SelfieAgeDetectionSubmitArea.show();
+							// express flow: the camera starts without the intro's button
+							StartPage.Method.expressClick(instance.ui.SelfieAgeDetectionStartButton);
 
 						});
 
@@ -46,6 +48,8 @@ namespace AvsFactory {
 						instance.entity.SelfieAgeDetection.facingMode = Config.FACING_MODE_REQUIRED;
 						instance.ui.SelfieAgeDetectionDeviceAccessArea.hide();
 						instance.ui.SelfieAgeDetectionSubmitArea.show();
+						// express flow: the camera starts without the intro's button
+						StartPage.Method.expressClick(instance.ui.SelfieAgeDetectionStartButton);
 
 					}
 

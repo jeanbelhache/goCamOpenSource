@@ -25,6 +25,12 @@ namespace AvsFactory {
 
 							instance.postMessage.emit(Config.EVENT_ON_RESOURCES_LOADED);
 
+							// express flow: no start page for the selfie, the embedding page stands for it
+							if ((<any>Application).expressFlow && instance.entity.VerificationStepGlobal.verificationType != Avs.Entity.VerificationStepGlobal.VERIFICATION_TYPE_SCAN_ID) {
+								instance.entity.VerificationStepGlobal.termsAndConditionAgreement = true;
+								Method.expressClick(instance.ui.StartButton);
+							}
+
 							return;
 						}
 

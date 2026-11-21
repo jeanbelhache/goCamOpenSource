@@ -29,6 +29,15 @@ Copy the `.env.example` file and rename it to `.env` in the project's root direc
 cp .env.example .env
 ```
 
+## Express flow (this fork)
+
+This fork adds one optional setting, `EXPRESS_FLOW=true` in `.env`, meant for the iframe overlay integration where the embedding page already explains the check to the visitor:
+
+* the start page (verification type, terms checkbox, start button) and the selfie intro button are passed automatically, so the camera permission prompt is the first thing the visitor sees;
+* once the result is saved, it is sent to the embedding page (`avs.onVerificationSuccess`) without the confirmation button.
+
+Nothing else changes: same models, same challenge 25 logic, same fallback to the ID document, same payload format. With `EXPRESS_FLOW` unset or `false` the application behaves exactly like upstream. The changes are in `source/` (search for "express flow") and in the compiled `app/` files.
+
 ## Install
 
 This project was developed using Nodejs v20, we recommend using a compatible version.
